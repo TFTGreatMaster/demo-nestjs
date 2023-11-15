@@ -48,7 +48,7 @@ export class BlogController {
     }
 
     @Put('/:id')
-    updateBlogs(@Param('id') id: number, @Body(new ValidationPipe()) blogDto: BlogDto, @Res() res: Response): Promise<ResponseType<Blog>> {
+    async updateBlogs(@Param('id') id: number, @Body(new ValidationPipe()) blogDto: BlogDto, @Res() res: Response): Promise<ResponseType<Blog>> {
         try {
             return res.json(new ResponseData(this.blogService.updateBlog(id, blogDto), HttpStatus.SUCCESS, HttpMessage.SUCCESS))
 
@@ -59,12 +59,12 @@ export class BlogController {
     }
 
     @Delete('/:id')
-    deleteBlogs(@Param('id') id: number): ResponseData<boolean> {
+    async deleteBlogs(@Param('id') id: number, @Res() res: Response): Promise<Response<boolean>> {
         try {
-            return new ResponseData<boolean>(this.blogService.deleteBlog(id), HttpStatus.SUCCESS, HttpMessage.SUCCESS)
+            return res.json(new ResponseData<boolean>( await this.blogService.deleteBlog(id), HttpStatus.SUCCESS, HttpMessage.SUCCESS))
 
         } catch (error) {
-            return new ResponseData<boolean>(null, HttpStatus.ERROR, HttpMessage.ERROR)
+            return res.json(new ResponseData<boolean>(null, HttpStatus.ERROR, HttpMessage.ERROR))
 
         }
     }
